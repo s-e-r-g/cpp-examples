@@ -1,17 +1,18 @@
-#include <iostream>
-#include <iterator>
-#include <bitset>
-
-using namespace std;
-
-
-
 //
 // Create iterator that iterates via numbers with unique digits only
 // Example: 
 //           123, 1508 - UNIQUE
 //           112, 33   - NOT UNIQUE
 //
+/////////////////////////////////////////////////////////////////////////
+
+
+#include <iostream>
+#include <iterator>
+#include <bitset>
+
+using namespace std;
+
 
 
 class MyIterator : public std::iterator<std::input_iterator_tag, int>
