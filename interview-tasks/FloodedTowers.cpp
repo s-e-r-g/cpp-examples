@@ -6,6 +6,8 @@
 #include <cstdlib>
 
 
+
+
 class Area
 {
 public:
@@ -13,7 +15,7 @@ public:
 
     void generateRandomTowers(int maxHeight)
     {
-        for (size_t i = 0; i < width; ++i) towers[i] = rand() % maxHeight;
+        for (size_t i = 0; i < width; ++i) towers[i] = rand() % (maxHeight + 1);
     }
 
     size_t calculateWater()
@@ -102,10 +104,19 @@ private:
 
 int main(int argc, const char** argv)
 {
+    if (argc < 3)
+    {
+        std::cerr << "Usage: " << argv[0] << " <Towers> <Max Height>>" << std::endl;
+        return 1;
+    }
+
+    int towers = atoi(argv[1]);
+    int maxHeight = atoi(argv[2]);
+
     srand (time(NULL));
 
-    Area area(60);
-    area.generateRandomTowers(40);
+    Area area(towers);
+    area.generateRandomTowers(maxHeight);
     size_t waterVolume = area.calculateWater();
     area.print();
     std::cout << "Water volume: " << waterVolume << std::endl;
