@@ -16,13 +16,12 @@ public:
     void calculateWater()
     {
         size_t leftPos = 0;
-        int rightPos = width;
+        int rightPos = width - 1;
 
-        int leftMax = 0;
-        int rightMax = 0;
-        int globalMax = 0;
+        int leftMax = towers[leftPos];
+        int rightMax = towers[rightPos];
 
-        enum {LeftToRight, RightToLeft} direction = LeftToRight;
+        enum {LeftToRight, RightToLeft} direction = leftMax < rightMax ? LeftToRight : RightToLeft;
 
         while (leftPos < rightPos)
         {
@@ -94,8 +93,8 @@ int main(int argc, const char** argv)
 {
     srand (time(NULL));
 
-    Area area(20);
-    area.generateRandomTowers(15);
+    Area area(60);
+    area.generateRandomTowers(40);
     area.calculateWater();
     area.print();
 }
