@@ -1,5 +1,26 @@
 // Copyright by Serg Ponomarenko 2013
 //
+// You have an array with walls heights.
+// Calculate amount of water left after rain between these walls.
+// --------------------------------------------------
+// Example:
+//
+//               #   
+//               #   
+//             #~#   
+//     #~#~~~~~#~#   
+//     #~##~~#~#~#   
+//    ##~##~######~# 
+//    ##~##~######~##
+//    ############~##
+//
+//  Wall Array is : [3,5,1,5,4,1,3,4,3,6,3,8,0,3,2]
+//
+//  Amount of water is : 20
+//
+///////////////////////////////////////////////////
+
+
 
 #include <iostream>
 #include <vector>
