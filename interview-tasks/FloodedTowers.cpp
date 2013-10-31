@@ -1,7 +1,8 @@
+/////////////////////////////////////////////////////////////////////////
 // Copyright by Serg Ponomarenko 2013
 //
 // You have an array with walls heights.
-// Calculate amount of water left after rain between these walls.
+// Calculate the amount of water left after rain between these walls.
 // --------------------------------------------------
 // Example:
 //
