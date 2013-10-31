@@ -1,3 +1,6 @@
+// Copyright by Serg Ponomarenko 2013
+//
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -16,7 +19,7 @@ public:
     size_t calculateWater()
     {
         if (width <= 1) return 0;
-        
+
         size_t leftPos = 0;
         size_t rightPos = width - 1;
 
@@ -26,15 +29,15 @@ public:
         enum {LeftToRight, RightToLeft} direction = leftMax < rightMax ? LeftToRight : RightToLeft;
 
         size_t waterVolume = 0;
-        
+
         while (leftPos < rightPos)
         {
             if (direction == LeftToRight)
             {
                 water[leftPos] = leftMax - towers[leftPos];
-                
+
                 waterVolume += water[leftPos]; 
-                
+
                ++leftPos;
                if (towers[leftPos] > leftMax)
                {
@@ -48,9 +51,9 @@ public:
             else
             {
                water[rightPos] = rightMax - towers[rightPos];
-               
-               waterVolume += water[rightPos]; 
-               
+
+               waterVolume += water[rightPos];
+
                --rightPos;
                if (towers[rightPos] > rightMax)
                {
@@ -62,13 +65,13 @@ public:
                }
             }
         }
-        
+
         return waterVolume;
     }
 
     void print() const
     {
-        // get min & max
+        // Get min & max to fit picture size
         int min = 0;
         int max = 0;
         for (size_t i = 0; i < width; ++i)
