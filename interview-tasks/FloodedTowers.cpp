@@ -42,7 +42,11 @@ public:
 
     size_t calculateWater()
     {
-        if (width <= 1) return 0;
+        if (width <= 2)
+        {
+              std::fill(water.begin(), water.end(), 0);
+              return 0;
+        }
 
         size_t leftPos = 0;
         size_t rightPos = width - 1;
