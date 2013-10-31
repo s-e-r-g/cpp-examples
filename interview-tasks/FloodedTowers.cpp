@@ -50,42 +50,34 @@ public:
         int leftMax = towers[leftPos];
         int rightMax = towers[rightPos];
 
-        enum {LeftToRight, RightToLeft} direction = leftMax < rightMax ? LeftToRight : RightToLeft;
-
         size_t waterVolume = 0;
 
         while (leftPos < rightPos)
         {
-            if (direction == LeftToRight)
+            if (leftMax < rightMax) // Walk LEFT -----> RIGHT
             {
                 water[leftPos] = leftMax - towers[leftPos];
 
                 waterVolume += water[leftPos]; 
 
                ++leftPos;
+
                if (towers[leftPos] > leftMax)
                {
                    leftMax = towers[leftPos];
-                   if (leftMax > rightMax)
-                   {
-                        direction = RightToLeft;
-                   }
                }
             }
-            else
+            else // Walk LEFT <------ RIGHT
             {
                water[rightPos] = rightMax - towers[rightPos];
 
                waterVolume += water[rightPos];
 
                --rightPos;
+
                if (towers[rightPos] > rightMax)
                {
                    rightMax = towers[rightPos];
-                   if (rightMax > leftMax)
-                   {
-                        direction = LeftToRight;
-                   }
                }
             }
         }
