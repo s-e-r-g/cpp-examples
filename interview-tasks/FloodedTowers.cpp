@@ -13,21 +13,28 @@ public:
         for (size_t i = 0; i < width; ++i) towers[i] = rand() % maxHeight;
     }
 
-    void calculateWater()
+    size_t calculateWater()
     {
+        if (width <= 1) return 0;
+        
         size_t leftPos = 0;
-        int rightPos = width - 1;
+        size_t rightPos = width - 1;
 
         int leftMax = towers[leftPos];
         int rightMax = towers[rightPos];
 
         enum {LeftToRight, RightToLeft} direction = leftMax < rightMax ? LeftToRight : RightToLeft;
 
+        size_t waterVolume = 0;
+        
         while (leftPos < rightPos)
         {
             if (direction == LeftToRight)
             {
                 water[leftPos] = leftMax - towers[leftPos];
+                
+                waterVolume += water[leftPos]; 
+                
                ++leftPos;
                if (towers[leftPos] > leftMax)
                {
@@ -41,6 +48,9 @@ public:
             else
             {
                water[rightPos] = rightMax - towers[rightPos];
+               
+               waterVolume += water[rightPos]; 
+               
                --rightPos;
                if (towers[rightPos] > rightMax)
                {
@@ -52,6 +62,8 @@ public:
                }
             }
         }
+        
+        return waterVolume;
     }
 
     void print() const
@@ -66,6 +78,7 @@ public:
            if (max < (towers[i] + water[i])) max = (towers[i] + water[i]);
         }
 
+        //Display picture
         for (int y = max; y > min; y--)
         {
            for (size_t x = 0; x < width; ++x)
@@ -84,18 +97,14 @@ private:
 };
 
 
-
-
-
-
-
 int main(int argc, const char** argv)
 {
     srand (time(NULL));
 
     Area area(60);
     area.generateRandomTowers(40);
-    area.calculateWater();
+    size_t waterVolume = area.calculateWater();
     area.print();
+    std::cout << "Water volume: " << waterVolume << std::endl;
 }
 
