@@ -80,6 +80,25 @@ size_t calc2(const std::vector<std::uint64_t>& array)
     return count;
 }
 
+size_t calc3(const std::vector<std::uint64_t>& array)
+{
+    size_t count = 0;
+    for (const auto c : array)
+    {
+        count += table[c & 0xff];
+        count += table[c >> 8 & 0xff];
+        count += table[c >> 16 & 0xff];
+        count += table[c >> 24 & 0xff];
+        count += table[c >> 32 & 0xff];
+        count += table[c >> 40 & 0xff];
+        count += table[c >> 48 & 0xff];
+        count += table[c >> 56 & 0xff];
+    }
+    
+    return count;
+}
+
+
 int main()
 {
     std::vector<std::uint64_t> a(1000000);
@@ -101,6 +120,12 @@ int main()
     count = calc2(a);   
     end = std::chrono::steady_clock::now();
     std::cout << "8bit Table Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
+    std::cout << "Count: " << count << "\n";
+
+    start = std::chrono::steady_clock::now();
+    count = calc3(a);   
+    end = std::chrono::steady_clock::now();
+    std::cout << "8bit Table (opt) Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
     std::cout << "Count: " << count << "\n";
 
 }
