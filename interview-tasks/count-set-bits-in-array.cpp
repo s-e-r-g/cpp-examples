@@ -19,6 +19,21 @@ size_t calc(const std::vector<std::uint64_t>& array)
     return count;
 }
 
+size_t calc1(const std::vector<std::uint64_t>& array)
+{
+    size_t count = 0;
+    for (auto c : array)
+    {
+        while (c)
+        {
+            count += c & 1;
+            c >>= 1;
+        }
+    }
+    
+    return count;
+}
+
 
 static const std::uint8_t table[256] = 
 {
@@ -74,6 +89,12 @@ int main()
     size_t count = calc(a);   
     auto end = std::chrono::steady_clock::now();
     std::cout << "Direct Shift Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
+    std::cout << "Count: " << count << "\n";
+    
+    start = std::chrono::steady_clock::now();
+    count = calc1(a);   
+    end = std::chrono::steady_clock::now();
+    std::cout << "Direct Shift (Opt) Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
     std::cout << "Count: " << count << "\n";
     
     start = std::chrono::steady_clock::now();
