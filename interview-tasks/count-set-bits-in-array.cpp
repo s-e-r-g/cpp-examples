@@ -118,6 +118,30 @@ size_t calc4(const std::vector<std::uint64_t>& array)
     return totalCount;
 }
 
+size_t calc5(const std::vector<std::uint64_t>& array)
+{
+    size_t totalCount = 0;
+
+    constexpr std::uint64_t mask = (1ul << 56) | (1ul << 48) | (1ul << 40) | (1ul << 32) | (1ul << 24) | (1ul << 16) | (1ul << 8) | (1ul << 0);
+
+    std::uint64_t multiCounter = 0;
+
+    for (const auto c : array)
+    {
+        multiCounter+= (c & mask) + (c >> 1 & mask) + (c >> 2 & mask) + (c >> 3 & mask) + (c >> 4 & mask) + (c >> 5 & mask) + (c >> 6 & mask) + (c >> 7 & mask);
+        
+        if (multiCounter & 0b1000000010000000100000001000000010000000100000001000000010000000)
+        {
+            totalCount += (multiCounter & 0xff) + (multiCounter >> 8 & 0xff) + (multiCounter >> 16 & 0xff) + (multiCounter >> 24 & 0xff)
+             + (multiCounter >> 32 & 0xff) + (multiCounter >> 40 & 0xff) + (multiCounter >> 48 & 0xff) + (multiCounter >> 56 & 0xff);
+             
+            multiCounter =  0;
+        }
+    }
+
+    return totalCount;
+}
+
 int main()
 {
     std::vector<std::uint64_t> a(1000000);
@@ -151,5 +175,11 @@ int main()
     count = calc4(a);   
     end = std::chrono::steady_clock::now();
     std::cout << "8bit Table (opt2) Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
+    std::cout << "Count: " << count << "\n";
+ 
+    start = std::chrono::steady_clock::now();
+    count = calc5(a);   
+    end = std::chrono::steady_clock::now();
+    std::cout << "64bit Shift Execution took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us.\n";
     std::cout << "Count: " << count << "\n";
 }
