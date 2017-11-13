@@ -34,8 +34,7 @@ size_t calcDirectShiftOptimized(const std::vector<std::uint64_t>& array)
     return count;
 }
 
-
-static const std::uint8_t table[256] =
+constexpr std::uint8_t table8bit[256] =
 {
     0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,
     1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
@@ -60,39 +59,57 @@ size_t calc8bitTable(const std::vector<std::uint64_t>& array)
     size_t count = 0;
     for (auto c : array)
     {
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
         c >>= 8;
-        count += table[c & 0xff];
+        count += table8bit[c & 0xff];
     }
 
     return count;
 }
+
+
+std::vector<std::uint8_t> table16bit(65536);
+
 
 size_t calc8bitTableOptimized(const std::vector<std::uint64_t>& array)
 {
     size_t count = 0;
     for (const auto c : array)
     {
-        count += table[c & 0xff];
-        count += table[c >> 8 & 0xff];
-        count += table[c >> 16 & 0xff];
-        count += table[c >> 24 & 0xff];
-        count += table[c >> 32 & 0xff];
-        count += table[c >> 40 & 0xff];
-        count += table[c >> 48 & 0xff];
-        count += table[c >> 56 & 0xff];
+        count += table8bit[c & 0xff];
+        count += table8bit[c >> 8 & 0xff];
+        count += table8bit[c >> 16 & 0xff];
+        count += table8bit[c >> 24 & 0xff];
+        count += table8bit[c >> 32 & 0xff];
+        count += table8bit[c >> 40 & 0xff];
+        count += table8bit[c >> 48 & 0xff];
+        count += table8bit[c >> 56 & 0xff];
+    }
+
+    return count;
+}
+
+size_t calc16bitTable(const std::vector<std::uint64_t>& array)
+{
+    size_t count = 0;
+    for (const auto c : array)
+    {
+        count += table16bit[c & 0xffff];
+        count += table16bit[c >> 16 & 0xffff];
+        count += table16bit[c >> 32 & 0xffff];
+        count += table16bit[c >> 48 & 0xffff];
     }
 
     return count;
@@ -104,14 +121,14 @@ size_t calc8bitTableOptimizedV2(const std::vector<std::uint64_t>& array)
 
     for (const auto c : array)
     {
-        auto count = table[c & 0xff];
-        count += table[c >> 8 & 0xff];
-        count += table[c >> 16 & 0xff];
-        count += table[c >> 24 & 0xff];
-        count += table[c >> 32 & 0xff];
-        count += table[c >> 40 & 0xff];
-        count += table[c >> 48 & 0xff];
-        count += table[c >> 56 & 0xff];
+        auto count = table8bit[c & 0xff];
+        count += table8bit[c >> 8 & 0xff];
+        count += table8bit[c >> 16 & 0xff];
+        count += table8bit[c >> 24 & 0xff];
+        count += table8bit[c >> 32 & 0xff];
+        count += table8bit[c >> 40 & 0xff];
+        count += table8bit[c >> 48 & 0xff];
+        count += table8bit[c >> 56 & 0xff];
         totalCount += count;
     }
 
@@ -222,12 +239,25 @@ size_t calcTema2(const std::vector<std::uint64_t>& data)
     return (r32 & m6) + ((r32 >> 32) & m6);
 }
 
-using Calculator = size_t (*)(const std::vector<std::uint64_t>&);
-
 int main()
 {
+    // Calculate tables
+    {
+        std::vector<std::uint64_t> v(1);
+        for (uint64_t i = 0; i < 65536; ++i)
+        {
+            v[0] = i;
+            table16bit[i] = calcDirectShift(v);
+        }
+    }
+
+
+    // Fill test data
     std::vector<std::uint64_t> a(1000000);
     for (size_t i = 0; i < a.size(); ++i) a[i] = 0b1010101010101010101010101010101010101010101010101010101010101010;
+
+    // Preform tests
+    using Calculator = size_t (*)(const std::vector<std::uint64_t>&);
 
     struct Experiment
     {
@@ -246,6 +276,7 @@ int main()
     experiments.push_back({"64bit Shift", calc64BitShift});
     experiments.push_back({"Tema shift", calcTema});
     experiments.push_back({"Tema2 shift", calcTema2});
+    experiments.push_back({"16bit Table", calc16bitTable});
 
     for (auto& experiment : experiments)
     {
