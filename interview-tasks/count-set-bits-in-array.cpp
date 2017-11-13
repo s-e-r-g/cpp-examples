@@ -167,6 +167,61 @@ size_t calcTema(const std::vector<std::uint64_t>& data)
     return (r32 & m6) + ((r32 >> 32) & m6);
 }
 
+size_t calcTema2(const std::vector<std::uint64_t>& data)
+{
+    constexpr std::uint64_t m1 = 0x5555555555555555;
+    constexpr std::uint64_t m2 = 0x3333333333333333;
+    constexpr std::uint64_t m3 = 0x0F0F0F0F0F0F0F0F;
+    constexpr std::uint64_t m4 = 0x00FF00FF00FF00FF;
+    constexpr std::uint64_t m5 = 0x0000FFFF0000FFFF;
+    constexpr std::uint64_t m6 = 0x00000000FFFFFFFF;
+
+    std::uint64_t r32 = 0;
+
+    const auto count = data.size();
+    const auto truncatedCount = count / 30 * 30;
+
+    size_t i = 0;
+    while (i < truncatedCount)
+    {
+        std::uint64_t r8 = 0;
+        for (std::uint8_t j = 0; j < 10; ++j)
+        {
+            std::uint64_t r4 = 0;
+            for (std::uint8_t k = 0; k < 3; ++k)
+            {
+                auto value = data[i++];
+                value = (value & m1) + ((value >> 1) & m1);
+                value = (value & m2) + ((value >> 2) & m2);
+
+                r4 += value;
+            }
+
+            r8 += (r4 & m3) + ((r4 >> 4) & m3);
+        }
+
+        r8 = (r8 & m4) + ((r8 >> 8) & m4);
+        r8 = (r8 & m5) + ((r8 >> 16) & m5);
+
+        r32 += r8;
+    }
+
+    for (; i < count; ++i)
+    {
+        auto value = data[i];
+        value = (value & m1) + ((value >> 1) & m1);
+        value = (value & m2) + ((value >> 2) & m2);
+        value = (value & m3) + ((value >> 4) & m3);
+        value = (value & m4) + ((value >> 8) & m4);
+        value = (value & m5) + ((value >> 16) & m5);
+
+        r32 += value;
+    }
+
+
+    return (r32 & m6) + ((r32 >> 32) & m6);
+}
+
 using Calculator = size_t (*)(const std::vector<std::uint64_t>&);
 
 int main()
@@ -190,6 +245,7 @@ int main()
     experiments.push_back({"8bit Table (opt2)", calc8bitTableOptimizedV2});
     experiments.push_back({"64bit Shift", calc64BitShift});
     experiments.push_back({"Tema shift", calcTema});
+    experiments.push_back({"Tema2 shift", calcTema2});
 
     for (auto& experiment : experiments)
     {
