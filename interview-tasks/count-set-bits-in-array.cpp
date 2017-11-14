@@ -26,6 +26,26 @@ constexpr std::uint8_t table8bit[256] =
     4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
 };
 
+constexpr std::uint8_t table8bitCompressed[] =
+{
+    0,
+    1,2,
+    1,2,2,
+    2,3,3,4,
+    1,2,2,3,2,
+    2,3,3,4,3,4,
+    2,3,3,4,3,4,4,
+    3,4,4,5,4,5,5,6,
+    1,2,2,3,2,3,3,4,2,
+    2,3,3,4,3,4,4,5,3,4,
+    2,3,3,4,3,4,4,5,3,4,4,
+    3,4,4,5,4,5,5,6,4,5,5,6,
+    2,3,3,4,3,4,4,5,3,4,4,5,4,
+    3,4,4,5,4,5,5,6,4,5,5,6,5,6,
+    3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,
+    4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
+};
+
 std::vector<std::uint8_t> table16bit(65536);
 
 
@@ -98,6 +118,36 @@ size_t calc8bitTableOptimized(const std::vector<std::uint64_t>& array)
         count += table8bit[c >> 40 & 0xff];
         count += table8bit[c >> 48 & 0xff];
         count += table8bit[c >> 56 & 0xff];
+    }
+
+    return count;
+}
+
+size_t calc8bitCompressedTable(const std::vector<std::uint64_t>& array)
+{
+    auto getIndex = [](std::uint8_t value)
+        {
+            std::uint8_t x = value & 0xf;
+            std::uint8_t y = value >> 4 & 0xf;
+            if (x > y)
+            {
+                std::swap(x, y);
+            }
+
+            return y * (y + 1) + x;
+        };
+
+    size_t count = 0;
+    for (const auto c : array)
+    {
+        count += table8bitCompressed[getIndex(c & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 8 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 16 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 24 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 32 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 40 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 48 & 0xff)];
+        count += table8bitCompressed[getIndex(c >> 56 & 0xff)];
     }
 
     return count;
@@ -317,6 +367,7 @@ int main()
     experiments.push_back({"8bit Table", calc8bitTable});
     experiments.push_back({"8bit Table (opt)", calc8bitTableOptimized});
     experiments.push_back({"8bit Table (opt2)", calc8bitTableOptimizedV2});
+    experiments.push_back({"8bit Compressed Table", calc8bitCompressedTable});
 
     experiments.push_back({"16bit Table", calc16bitTable});
 
