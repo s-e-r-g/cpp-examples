@@ -1,6 +1,7 @@
+
+
 #include <string>
 #include <algorithm>
-#include <queue>
 
 int solution(std::string& S, int K)
 {
@@ -71,24 +72,25 @@ int solution(std::string& S, int K)
     size_t windowEnd = 0;
     size_t maxWindowEnd = S.size() - 1;
     
-    std::queue<int> queue;
     changes = 0;
     
     int minChanges = k + 2;
     
+    size_t windowSize = 0;
+    
     for (; windowEnd <= maxWindowEnd; ++windowEnd)
     {
-        if (queue.size() == k)
+        if (windowSize == k)
         {
-            changes -= queue.front();
-            queue.pop();            
+            changes -= (S[windowStart - 1] == 'L' ? 1 : 0);
+            --windowSize;
         }
 
         int change = S[windowEnd] == 'L' ? 1 : 0;
-        queue.push(change);
+        ++windowSize;
         changes += change;
 
-        if (queue.size() == k)
+        if (windowSize == k)
         {
             int borderChanges = (windowStart > 0 && S[windowStart - 1] == 'M') ? 1 : 0;
             borderChanges += (windowEnd < maxWindowEnd && S[windowEnd + 1] == 'M') ? 1 : 0;
