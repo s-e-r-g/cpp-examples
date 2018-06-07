@@ -18,30 +18,22 @@ int solution(const std::string &S)
 {
     using Hash = std::bitset<128>;
     
-    std::unordered_map<Hash, size_t> map;
+    std::unordered_map<Hash, int> map;
 
     Hash hash;
-    
-    for (size_t i = 0; i < S.size(); ++i)
-    {
-        hash.flip(S[i]);
-        map[hash] = i;
-    }
 
-    size_t maxLen = 0;
-    hash.reset();
-    for (size_t i = 0; i < S.size(); ++i)
+    map.insert({hash, -1});
+    
+    int len = (int)S.size();
+    int maxLen = 0;    
+    for (int i = 0; i < len; ++i)
     {
-        const auto it = map.find(hash);
-        if (it != map.end())
-        {
-            if (it->second > i)
-            {
-                maxLen = std::max(maxLen, it->second - i + 1);
-            }
-        }
-        
         hash.flip(S[i]);
+        const auto inserted = map.insert({hash, i});
+        if (!inserted.second)
+        {
+            maxLen = std::max(maxLen, i - inserted.first->second);
+        }
     }
     
     return maxLen;
