@@ -40,7 +40,7 @@ public:
     }
         
 private:
-    bool bt(int x, int y, uint8_t value)
+    bool bt(int x, int y, std::uint8_t value)
     {
         if (!isStepPossible(x, y, value)) return false;
       
@@ -61,7 +61,7 @@ private:
         return false;
     }
     
-    bool isStepPossible(int x, int y, uint8_t value)
+    bool isStepPossible(int x, int y, std::uint8_t value)
     {
         const int squareX = (x / 3) * 3;
         const int squareY = (y / 3) * 3;
@@ -96,9 +96,6 @@ private:
 int main()
 {
     SudokuSolver solver;
-    
-    solver.print();
-    
     
     if (solver.solve())
     {
