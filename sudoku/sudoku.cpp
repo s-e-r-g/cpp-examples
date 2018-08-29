@@ -1,7 +1,4 @@
-// Example program
 #include <iostream>
-#include <string>
-
 
 class SudokuSolver
 {
@@ -14,7 +11,7 @@ public:
     bool solve()
     {
         clean();
-        for (uint8_t v = 1; v <= 9; ++v)
+        for (std::uint8_t v = 1; v <= 9; ++v)
         {
             if (bt(0, 0, v)) return true;
         }
@@ -54,7 +51,7 @@ private:
         const int nextX = (x + 1) % 9;
         const int nextY = y + (nextX == 0 ? 1 : 0);
         
-        for (uint8_t v = 1; v <= 9; ++v)
+        for (std::uint8_t v = 1; v <= 9; ++v)
         {
             if (bt(nextX, nextY, v)) return true;
         }
@@ -93,7 +90,7 @@ private:
         return true;
     }
     
-    uint8_t _field[9][9];
+    std::uint8_t _field[9][9];
 };
 
 int main()
