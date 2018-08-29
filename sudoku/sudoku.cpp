@@ -1,15 +1,20 @@
+// Example program
 #include <iostream>
+#include <string>
+
 
 class SudokuSolver
 {
 public:
+    SudokuSolver()
+    { 
+	clean();
+    }
+    
     bool solve()
     {
-        for (int y = 0; y < 9; ++y)
-            for (int x = 0; x < 9; ++x)
-                _field[y][x] = 0;
-        
-        for (std::uint8_t v = 1; v <= 9; ++v)
+        clean();
+        for (uint8_t v = 1; v <= 9; ++v)
         {
             if (bt(0, 0, v)) return true;
         }
@@ -28,6 +33,13 @@ public:
             }
             std::cout << "\n";
         }
+    }
+    
+    void clean()
+    {
+        for (int y = 0; y < 9; ++y)
+            for (int x = 0; x < 9; ++x)
+                _field[y][x] = 0;
     }
         
 private:
@@ -63,20 +75,21 @@ private:
             {
                 return false;
             }
-            
+
             if (i != y && _field[i][x] == value)
             {
                 return false;
             }
-            
+
             const int xToCheck = squareX + i % 3;
             const int yToCheck = squareY + i / 3;
+
             if (xToCheck != x && yToCheck != y && _field[yToCheck][xToCheck] == value)
             {
                 return false;
             }
         }
-        
+
         return true;
     }
     
@@ -86,7 +99,10 @@ private:
 int main()
 {
     SudokuSolver solver;
-
+    
+    solver.print();
+    
+    
     if (solver.solve())
     {
         solver.print();
