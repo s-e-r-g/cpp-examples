@@ -80,6 +80,21 @@ size_t calcDirectShiftOptimized(const std::vector<std::uint64_t>& array)
     return count;
 }
 
+size_t calcSubtractWithMinusOne(const std::vector<std::uint64_t>& array)
+{
+    size_t count = 0;
+    for (auto c : array)
+    {
+        while (c)
+        {
+            ++count;
+            c &= (c - 1);
+        }
+    }
+
+    return count;
+}
+
 size_t calc8bitTable(const std::vector<std::uint64_t>& array)
 {
     size_t count = 0;
@@ -361,6 +376,7 @@ int main()
     std::vector<Experiment> experiments;
     experiments.push_back({"Direct Shift", calcDirectShift});
     experiments.push_back({"Direct Shift Optimized", calcDirectShiftOptimized});
+    experiments.push_back({"Subtract with minus one : n &= n - 1", calcSubtractWithMinusOne});
 
     experiments.push_back({"64bit Shift", calc64BitShift});
 
